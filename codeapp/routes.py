@@ -1,8 +1,8 @@
 # pylint: disable=cyclic-import
 
-#File that contains all the routes of the application.
-#This is equivalent to the "controller" part in a model-view-controller architecture.
-#In the final project, you will need to modify this file to implement your project.
+# File that contains all the routes of the application.
+# This is equivalent to the "controller" part in a model-view-controller architecture.
+#- In the final project, you will need to modify this file to implement your project.
 
 # built-in imports
 import io

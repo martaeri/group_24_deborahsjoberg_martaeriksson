@@ -65,9 +65,15 @@ def calculate_statistics(dataset: list[Movie]) -> Dict[int, float]:
         release_year = int(
             movie.release_date.split("-")[0]
         )  # Extract the year from the release_date
-        score = movie.score
-        if release_year not in highest_scores or score > highest_scores[release_year]:
-            highest_scores[release_year] = score
+        if (
+            release_year >= 2000
+        ):  # Check if the movie was released in the year 2000 or later
+            score = movie.score
+            if (
+                release_year not in highest_scores
+                or score > highest_scores[release_year]
+            ):
+                highest_scores[release_year] = score
 
     return highest_scores
 
