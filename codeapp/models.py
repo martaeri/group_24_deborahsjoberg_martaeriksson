@@ -5,5 +5,12 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 
-class Dummy:  # TODO: this class is to be removed
-    pass
+@dataclass
+class Movie:
+    id: str
+    title: str
+    genres: list[str]
+    runtime: int
+    release_date: date
+    budget: int
+    score: float
