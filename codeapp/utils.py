@@ -33,12 +33,17 @@ def get_data_list() -> list[Movie]:
 
     ################# dataset has not been downloaded, downloading now #################
     current_app.logger.info("Downloading dataset.")
-    original_dataset = pd.read_csv("https://onu1.s2.chalmers.se/datasets/tmdb_5000_movies.csv")
+    original_dataset = pd.read_csv(
+        "https://onu1.s2.chalmers.se/datasets/tmdb_5000_movies.csv"
+    )
 
     ########################## saving dataset to the database ##########################
     dataset_base: list[Movie] = []  # list to store the items
     # for each item in the dataset...
     for _, row in original_dataset.iterrows():
+        # Check if the score is numeric, if not set it to None
+        score_str = row["score"]
+        score = float(score_str) if score_str.replace('.', '', 1).isdigit() else None
         # create a new object
         new_movie = Movie(
             id=uuid.uuid4().hex,
@@ -47,7 +52,7 @@ def get_data_list() -> list[Movie]:
             runtime=row["runtime"],
             release_date=row["release_date"],
             budget=row["budget"],
-            score=row["score"],
+            score=score,
         )
         # push object to the database list
         db.rpush("dataset_list", pickle.dumps(new_movie))
@@ -62,19 +67,18 @@ def calculate_statistics(dataset: list[Movie]) -> Dict[int, float]:
 
     # Iterate through the dataset to find the highest rating for each year
     for movie in dataset:
-        if movie.score is not None:  # Check if the movie has a score
+        if movie.score is not None and movie.score.replace('.', '', 1).isdigit():  # Check if the movie score is a numeral value
             release_year = int(
                 movie.release_date.split("-")[0]
-        )  # Extract the year from the release_date
-        if (
-            release_year >= 2000
-        ):  # Check if the movie was released in the year 2000 or later
-            score = movie.score
+            )  # Extract the year from the release_date
             if (
-                release_year not in highest_scores
-                or score > highest_scores[release_year]
-            ):
-                highest_scores[release_year] = score
+                release_year >= 2000
+            ):  # Check if the movie was released in the year 2000 or later
+                score = float(movie.score)
+                if release_year not in highest_scores:
+                    highest_scores[release_year] = score
+                elif score > highest_scores[release_year]:
+                    highest_scores[release_year] = score
 
     return highest_scores
 

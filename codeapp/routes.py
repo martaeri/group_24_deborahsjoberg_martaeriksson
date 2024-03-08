@@ -34,33 +34,42 @@ def home() -> Response:
 
 
 @bp.get("/image")
-def image() -> Response:
+def image() -> FlaskResponse:
     # gets dataset
     dataset: list[Movie] = get_data_list()
 
     # get the statistics that is supposed to be shown
-    counter: dict[int, int] = calculate_statistics(dataset)
+    counter: dict[int, float] = calculate_statistics(dataset)
 
     # creating the plot
-
     fig = Figure()
-    fig.gca().bar(
+    ax = fig.gca()
+    ax.bar(
         list(sorted(counter.keys())),
         [counter[x] for x in sorted(counter.keys())],
         color="gray",
         alpha=0.5,
         zorder=2,
     )
-    fig.gca().plot(
+    ax.plot(
         list(sorted(counter.keys())),
         [counter[x] for x in sorted(counter.keys())],
         marker="x",
         color="#25a848",
         zorder=3,
     )
-    fig.gca().grid(ls=":", zorder=1)
-    fig.gca().set_xlabel("Year")
-    fig.gca().set_ylabel("Highest score of the year")
+    ax.grid(ls=":", zorder=1)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Highest score of the year")
+
+    # Set y-axis limits and ticks
+    ax.set_ylim(7, 9)  # Set y-axis limits from 7 to 9
+    ax.set_yticks([i / 10 for i in range(70, 91, 2)])  # Set y-axis ticks from 7.0 to 9.0 with intervals of 0.2
+
+    # Set x-axis tick labels to display the year for each column
+    ax.set_xticks(list(sorted(counter.keys())))  # Set x-axis ticks to years
+    ax.set_xticklabels(list(sorted(counter.keys())), rotation=45)  # Set x-axis tick labels to years with rotation for better readability
+
     fig.tight_layout()
 
     ################ START -  THIS PART MUST NOT BE CHANGED BY STUDENTS ################
