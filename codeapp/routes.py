@@ -2,7 +2,7 @@
 
 # File that contains all the routes of the application.
 # This is equivalent to the "controller" part in a model-view-controller architecture.
-#- In the final project, you will need to modify this file to implement your project.
+# In the final project, you will need to modify this file to implement your project.
 
 # built-in imports
 import io
@@ -14,7 +14,7 @@ from matplotlib.figure import Figure
 from werkzeug.wrappers.response import Response as WerkzeugResponse
 
 # internal imports
-import codeapp.models as models
+from codeapp.models import Movie
 from codeapp.utils import calculate_statistics, get_data_list, prepare_figure
 
 # define the response type
@@ -29,7 +29,7 @@ bp = Blueprint("bp", __name__, url_prefix="/")
 @bp.get("/")  # root route
 def home() -> Response:
     dataset: list[Movie] = get_data_list()
-    counter: dict[int, int] = calculate_statistics(dataset)
+    counter: dict[int, float] = calculate_statistics(dataset)
     return render_template("home.html", counter=counter)
 
 
@@ -63,12 +63,12 @@ def image() -> FlaskResponse:
     ax.set_ylabel("Highest score of the year")
 
     # Set y-axis limits and ticks
-    ax.set_ylim(7, 9)  # Set y-axis limits from 7 to 9
-    ax.set_yticks([i / 10 for i in range(70, 91, 2)])  # Set y-axis ticks from 7.0 to 9.0 with intervals of 0.2
+    ax.set_ylim(7, 10.5)  # Set y-axis limits from 7 to 10.5
+    ax.set_yticks([i / 10 for i in range(70, 106, 2)])
 
     # Set x-axis tick labels to display the year for each column
     ax.set_xticks(list(sorted(counter.keys())))  # Set x-axis ticks to years
-    ax.set_xticklabels(list(sorted(counter.keys())), rotation=45)  # Set x-axis tick labels to years with rotation for better readability
+    ax.set_xticklabels([str(year) for year in sorted(counter.keys())], rotation=45)
 
     fig.tight_layout()
 
@@ -104,7 +104,7 @@ def get_json_stats() -> Response:
     dataset: list[Movie] = get_data_list()
 
     # get the statistics that is supposed to be shown
-    counter: dict[int, int] = calculate_statistics(dataset)
+    counter: dict[int, float] = calculate_statistics(dataset)
 
     # render the page
     return jsonify(counter)

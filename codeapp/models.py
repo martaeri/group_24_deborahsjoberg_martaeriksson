@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 # python built-in imports
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 
 
 @dataclass
@@ -11,6 +10,6 @@ class Movie:
     title: str
     genres: list[str]
     runtime: int
-    release_date: date
+    release_date: str
     budget: int
-    score: float
+    score: float | None

@@ -2,18 +2,16 @@
 # standard library imports
 import pickle
 import uuid
-import pandas as pd
-import collections
+from typing import Dict
 
+import pandas as pd
 
 # external imports
 from flask import current_app
 
 # internal imports
-from typing import Dict
 from codeapp import db
-from codeapp.models import Movie  # namn fran models
-from sklearn.datasets import fetch_openml
+from codeapp.models import Movie
 
 
 def get_data_list() -> list[Movie]:
@@ -67,18 +65,16 @@ def calculate_statistics(dataset: list[Movie]) -> Dict[int, float]:
 
     # Iterate through the dataset to find the highest rating for each year
     for movie in dataset:
-        if movie.score is not None and movie.score.replace('.', '', 1).isdigit():  # Check if the movie score is a numeral value
-            release_year = int(
-                movie.release_date.split("-")[0]
-            )  # Extract the year from the release_date
-            if (
-                release_year >= 2000
-            ):  # Check if the movie was released in the year 2000 or later
-                score = float(movie.score)
-                if release_year not in highest_scores:
-                    highest_scores[release_year] = score
-                elif score > highest_scores[release_year]:
-                    highest_scores[release_year] = score
+        if movie.score is not None:
+            score_str = str(movie.score)
+            if score_str.replace('.', '', 1).isdigit():
+                release_year = int(movie.release_date.split("-")[0])
+                if release_year >= 2000:
+                    score = float(score_str)
+                    if release_year not in highest_scores:
+                        highest_scores[release_year] = score
+                    elif score > highest_scores[release_year]:
+                        highest_scores[release_year] = score
 
     return highest_scores
 
