@@ -22,7 +22,7 @@ def get_data_list() -> list[Movie]:
     into a list of Python objects, and saving it to a Redis list.
     """
     ##### check if dataset already exists, and if so, return the existing dataset  #####
-    db.delete("dataset_list")  # uncomment if you want to force deletion
+    # db.delete("dataset_list")  # uncomment if you want to force deletion
     if db.exists("dataset_list") > 0:  # checks if the `dataset` key already exists
         current_app.logger.info("Dataset already downloaded.")
         dataset_stored: list[Movie] = []  # empty list to be returned
@@ -62,8 +62,9 @@ def calculate_statistics(dataset: list[Movie]) -> Dict[int, float]:
 
     # Iterate through the dataset to find the highest rating for each year
     for movie in dataset:
-        release_year = int(
-            movie.release_date.split("-")[0]
+        if movie.score is not None:  # Check if the movie has a score
+            release_year = int(
+                movie.release_date.split("-")[0]
         )  # Extract the year from the release_date
         if (
             release_year >= 2000
