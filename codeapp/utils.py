@@ -33,7 +33,7 @@ def get_data_list() -> list[Movie]:
 
     ################# dataset has not been downloaded, downloading now #################
     current_app.logger.info("Downloading dataset.")
-    original_dataset = pd.read_csv("tmdb_5000_movies.csv")
+    original_dataset = pd.read_csv("https://onu1.s2.chalmers.se/datasets/tmdb_5000_movies.csv")
 
     ########################## saving dataset to the database ##########################
     dataset_base: list[Movie] = []  # list to store the items
