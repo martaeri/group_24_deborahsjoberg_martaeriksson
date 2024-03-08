@@ -91,11 +91,20 @@ def about() -> Response:
 
 @bp.get("/json-dataset")
 def get_json_dataset() -> Response:
-    # TODO
-    pass
+    # gets dataset
+    dataset: list[Movie] = get_data_list()
+
+    # render the page
+    return jsonify(dataset)
 
 
 @bp.get("/json-stats")
 def get_json_stats() -> Response:
-    # TODO
-    pass
+    # gets dataset
+    dataset: list[Movie] = get_data_list()
+
+    # get the statistics that is supposed to be shown
+    counter: dict[int, int] = calculate_statistics(dataset)
+
+    # render the page
+    return jsonify(counter)
